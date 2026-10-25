@@ -7,14 +7,8 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="background-bubbles">
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-    </div>
+  <!-- Fondo animado de ondas y señales de radio -->
+  <canvas id="matrixCanvas"></canvas>
 
   <main class="layout">
     <header>
@@ -54,5 +48,98 @@
   <div id="toast" class="toast" role="status"></div>
   <script src="/socket.io/socket.io.js"></script>
   <script src="app.js"></script>
+<!-- Script para la animación refinada: Ecualizador, notas musicales flotantes y líneas de osciloscopio -->
+  <script>
+    (function(){
+      const canvas = document.getElementById('matrixCanvas');
+      const ctx = canvas.getContext('2d');
+      const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      let w, h, columns, bars, particles;
+
+      function resize(){
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+        
+        // 1. Columnas del ecualizador inferior
+        const barWidth = 14;
+        columns = Math.ceil(w / barWidth);
+        bars = new Array(columns).fill(0).map(() => ({
+          height: Math.random() * h * 0.3 + 15,
+          speed: Math.random() * 0.05 + 0.02,
+          angle: Math.random() * Math.PI
+        }));
+
+        // 2. Partículas y notas musicales flotantes
+        particles = new Array(25).fill(0).map(() => ({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          speedY: Math.random() * 0.7 + 0.2,
+          char: ['♪', '♫', '♩', '•', '✦'][Math.floor(Math.random() * 5)],
+          opacity: Math.random() * 0.35 + 0.1
+        }));
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      function tick(){
+        // Fondo cálido translúcido con estela suave
+        ctx.fillStyle = 'rgba(232, 204, 173, 0.18)';
+        ctx.fillRect(0, 0, w, h);
+
+        // --- LÍNEAS DE OSCILOSCOPIO / PULSO DE FONDO ---
+        ctx.strokeStyle = 'rgba(236, 128, 43, 0.12)';
+        ctx.lineWidth = 1;
+        for(let yLine = h * 0.25; yLine < h * 0.75; yLine += h * 0.25){
+          ctx.beginPath();
+          ctx.moveTo(0, yLine);
+          for(let x = 0; x < w; x += 35){
+            let yOffset = Math.sin(x * 0.012 + Date.now() * 0.002) * 7;
+            ctx.lineTo(x, yLine + yOffset);
+          }
+          ctx.stroke();
+        }
+
+        // --- NOTAS MUSICALES Y DESTELLOS FLOTANTES ---
+        ctx.font = '15px sans-serif';
+        particles.forEach(p => {
+          p.y -= p.speedY;
+          if(p.y < -20) {
+            p.y = h + 20;
+            p.x = Math.random() * w;
+          }
+          ctx.fillStyle = `rgba(236, 128, 43, ${p.opacity})`;
+          ctx.fillText(p.char, p.x, p.y);
+        });
+
+        // --- ECUALIZADOR INFERIOR DE ONDAS ANARANJADAS ---
+        const barWidth = w / columns;
+        for(let i = 0; i < columns; i++){
+          let bar = bars[i];
+          bar.angle += bar.speed;
+          let waveHeight = (Math.sin(bar.angle) + Math.sin(bar.angle * 2.5)) * 35 + (h * 0.2);
+          if(waveHeight < 12) waveHeight = 12;
+
+          const x = i * barWidth;
+          const y = h - waveHeight;
+
+          const gradient = ctx.createLinearGradient(x, h, x, y);
+          gradient.addColorStop(0, 'rgba(236, 128, 43, 0.9)');
+          gradient.addColorStop(1, 'rgba(255, 155, 72, 0.25)');
+
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.roundRect(x + 2, y, barWidth - 4, waveHeight, [4, 4, 0, 0]);
+          ctx.fill();
+        }
+      }
+
+      if(reduceMotion){
+        tick();
+      } else {
+        setInterval(tick, 35);
+      }
+    })();
+  </script>
 </body>
 </html>

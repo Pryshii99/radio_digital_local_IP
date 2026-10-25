@@ -1,5 +1,5 @@
 /* Importar tipografías modernas */
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap');
 
 /* ---------- Paleta & Variables Exactas ---------- */
 :root {
@@ -30,48 +30,16 @@ body {
   overflow-x: hidden;
 }
 
-/* ---------- Fondo Animado de Círculos / Burbujas Musicales ---------- */
-.background-bubbles {
+/* ---------- Fondo Animado de Ondas y Señales de Radio (Canvas) ---------- */
+#matrixCanvas {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1; /* Se queda siempre detrás de todo */
-  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0; /* Se queda siempre detrás de todo */
   pointer-events: none;
-}
-
-.bubble {
-  position: absolute;
-  bottom: -100px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.6), rgba(102, 188, 180, 0.25));
-  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.5), 0 4px 15px rgba(0, 0, 0, 0.05);
-  animation: floatUp 12s infinite linear;
-}
-
-/* Tamaños y posiciones aleatorias para las burbujas */
-.bubble:nth-child(1) { width: 80px; height: 80px; left: 10%; animation-duration: 10s; animation-delay: 0s; }
-.bubble:nth-child(2) { width: 40px; height: 40px; left: 25%; animation-duration: 14s; animation-delay: 2s; }
-.bubble:nth-child(3) { width: 110px; height: 110px; left: 45%; animation-duration: 18s; animation-delay: 1s; background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.5), rgba(237, 197, 91, 0.2)); }
-.bubble:nth-child(4) { width: 60px; height: 60px; left: 65%; animation-duration: 11s; animation-delay: 4s; }
-.bubble:nth-child(5) { width: 90px; height: 90px; left: 80%; animation-duration: 15s; animation-delay: 3s; background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.5), rgba(236, 128, 43, 0.2)); }
-.bubble:nth-child(6) { width: 50px; height: 50px; left: 90%; animation-duration: 13s; animation-delay: 5s; }
-
-@keyframes floatUp {
-  0% {
-    transform: translateY(0) scale(1);
-    opacity: 0.8;
-  }
-  50% {
-    transform: translateY(-55vh) scale(1.05);
-    opacity: 0.5;
-  }
-  100% {
-    transform: translateY(-110vh) scale(0.9);
-    opacity: 0;
-  }
+  display: block;
 }
 
 /* ---------- Estructura Principal ---------- */
