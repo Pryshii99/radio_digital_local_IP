@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Radio Digital Local</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="background-bubbles">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
+
+  <main class="layout">
+    <header>
+      <h1>Radio Digital Local</h1>
+      <p class="live-badge" id="live" data-live="false">
+        <span class="dot"></span>
+        <span id="live-text">SIN SEÑAL</span>
+        <span class="count"><span id="listeners">0</span> oyentes</span>
+      </p>
+    </header>
+
+    <!-- Tarjeta del reproductor -->
+    <section class="card player">
+      <p class="label">Sonando ahora</p>
+      <h2 id="song-title">Esperando transmisión…</h2>
+      <p id="song-artist" class="artist"></p>
+      <!-- El src se asigna en app.js según el host -->
+      <audio id="audio" controls preload="none"></audio>
+    </section>
+
+    <div class="columns">
+      <!-- Canciones disponibles -->
+      <section class="card">
+        <h3>Canciones disponibles</h3>
+        <ul id="songs" class="list"></ul>
+      </section>
+
+      <!-- Cola en tiempo real -->
+      <section class="card">
+        <h3>Cola de peticiones</h3>
+        <ol id="queue" class="list"></ol>
+        <p id="queue-empty" class="empty">Aún no hay peticiones. Elige una canción de la lista.</p>
+      </section>
+    </div>
+  </main>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
