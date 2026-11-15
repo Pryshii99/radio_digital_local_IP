@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Radio Digital Local</title>
-    <link rel="stylesheet" href="styles.css">
-  </head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Radio Digital Local</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
 <body>
-  <!-- Fondo animado de ondas y señales de radio -->
-  <canvas id="matrixCanvas"></canvas>
+  <!-- Fondo animado de ondas y notas musicales -->
+  <canvas id="matrixCanvas" aria-hidden="true"></canvas>
 
   <main class="layout">
-    <header>
+    <header class="head-circle">
       <h1>Radio Digital Local</h1>
       <p class="live-badge" id="live" data-live="false">
         <span class="dot"></span>
@@ -22,7 +22,12 @@
 
     <!-- Tarjeta del reproductor -->
     <section class="card player">
-      <p class="label">Sonando ahora</p>
+      <div class="player-top">
+        <p class="label">Sonando ahora</p>
+        <span class="equalizer" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+        </span>
+      </div>
       <h2 id="song-title">Esperando transmisión…</h2>
       <p id="song-artist" class="artist"></p>
       <!-- El src se asigna en app.js según el host -->
@@ -48,84 +53,83 @@
   <div id="toast" class="toast" role="status"></div>
   <script src="/socket.io/socket.io.js"></script>
   <script src="app.js"></script>
-<!-- Script para la animación refinada: Ecualizador, notas musicales flotantes y líneas de osciloscopio -->
+
+  <!-- Animación del canvas detrás de la interfaz -->
   <script>
-    (function(){
+    (function () {
       const canvas = document.getElementById('matrixCanvas');
+      if (!canvas) return;
       const ctx = canvas.getContext('2d');
       const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       let w, h, columns, bars, particles;
 
-      function resize(){
+      function resize() {
         w = canvas.width = window.innerWidth;
         h = canvas.height = window.innerHeight;
-        
-        // 1. Columnas del ecualizador inferior
+
         const barWidth = 14;
         columns = Math.ceil(w / barWidth);
         bars = new Array(columns).fill(0).map(() => ({
-          height: Math.random() * h * 0.3 + 15,
+          height: Math.random() * h * 0.25 + 15,
           speed: Math.random() * 0.05 + 0.02,
           angle: Math.random() * Math.PI
         }));
 
-        // 2. Partículas y notas musicales flotantes
-        particles = new Array(25).fill(0).map(() => ({
+        particles = new Array(22).fill(0).map(() => ({
           x: Math.random() * w,
           y: Math.random() * h,
-          speedY: Math.random() * 0.7 + 0.2,
+          speedY: Math.random() * 0.6 + 0.2,
           char: ['♪', '♫', '♩', '•', '✦'][Math.floor(Math.random() * 5)],
-          opacity: Math.random() * 0.35 + 0.1
+          opacity: Math.random() * 0.3 + 0.1
         }));
       }
+
       window.addEventListener('resize', resize);
       resize();
 
-      function tick(){
-        // Fondo cálido translúcido con estela suave
-        ctx.fillStyle = 'rgba(232, 204, 173, 0.18)';
-        ctx.fillRect(0, 0, w, h);
+      function tick() {
+        ctx.clearRect(0, 0, w, h);
 
-        // --- LÍNEAS DE OSCILOSCOPIO / PULSO DE FONDO ---
-        ctx.strokeStyle = 'rgba(236, 128, 43, 0.12)';
+        // Líneas suaves de pulso
+        ctx.strokeStyle = 'rgba(44, 44, 44, 0.08)';
         ctx.lineWidth = 1;
-        for(let yLine = h * 0.25; yLine < h * 0.75; yLine += h * 0.25){
+        for (let yLine = h * 0.25; yLine < h * 0.75; yLine += h * 0.25) {
           ctx.beginPath();
           ctx.moveTo(0, yLine);
-          for(let x = 0; x < w; x += 35){
-            let yOffset = Math.sin(x * 0.012 + Date.now() * 0.002) * 7;
+          for (let x = 0; x < w; x += 35) {
+            const yOffset = Math.sin(x * 0.012 + Date.now() * 0.002) * 6;
             ctx.lineTo(x, yLine + yOffset);
           }
           ctx.stroke();
         }
 
-        // --- NOTAS MUSICALES Y DESTELLOS FLOTANTES ---
+        // Notas musicales flotantes
         ctx.font = '15px sans-serif';
-        particles.forEach(p => {
+        particles.forEach((p) => {
           p.y -= p.speedY;
-          if(p.y < -20) {
+          if (p.y < -20) {
             p.y = h + 20;
             p.x = Math.random() * w;
           }
-          ctx.fillStyle = `rgba(236, 128, 43, ${p.opacity})`;
+          ctx.fillStyle = `rgba(102, 188, 180, ${p.opacity + 0.15})`;
           ctx.fillText(p.char, p.x, p.y);
         });
 
-        // --- ECUALIZADOR INFERIOR DE ONDAS ANARANJADAS ---
+        // Ecualizador inferior sutil
         const barWidth = w / columns;
-        for(let i = 0; i < columns; i++){
-          let bar = bars[i];
+        for (let i = 0; i < columns; i++) {
+          const bar = bars[i];
           bar.angle += bar.speed;
-          let waveHeight = (Math.sin(bar.angle) + Math.sin(bar.angle * 2.5)) * 35 + (h * 0.2);
-          if(waveHeight < 12) waveHeight = 12;
+          let waveHeight = (Math.sin(bar.angle) + Math.sin(bar.angle * 2.5)) * 28 + h * 0.14;
+          if (waveHeight < 10) waveHeight = 10;
 
           const x = i * barWidth;
           const y = h - waveHeight;
 
           const gradient = ctx.createLinearGradient(x, h, x, y);
-          gradient.addColorStop(0, 'rgba(236, 128, 43, 0.9)');
-          gradient.addColorStop(1, 'rgba(255, 155, 72, 0.25)');
+          gradient.addColorStop(0, 'rgba(102, 188, 180, 0.38)');
+          gradient.addColorStop(1, 'rgba(102, 188, 180, 0.04)');
 
           ctx.fillStyle = gradient;
           ctx.beginPath();
@@ -134,10 +138,10 @@
         }
       }
 
-      if(reduceMotion){
+      if (reduceMotion) {
         tick();
       } else {
-        setInterval(tick, 35);
+        setInterval(tick, 40);
       }
     })();
   </script>
