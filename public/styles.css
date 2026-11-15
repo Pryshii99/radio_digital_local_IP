@@ -1,27 +1,35 @@
 /* Importar tipografías modernas */
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
 
-/* ---------- Paleta & Variables Exactas ---------- */
+/* ---------- Paleta & Variables ---------- */
 :root {
   --fondo: #E8CCAD;
-  --primario: #EC802B;
-  --primario-brillo: #FF9B48;
-  --secundario: #EDC55B;
+  --primario: #2C2C2C;
+  --primario-brillo: #444444;
+  --secundario: #66BCB4;
   --acento: #66BCB4;
   --acento-brillo: #7FE5DC;
   --texto: #2C2C2C;
   --tarjeta: #FFF9F1;
   --radio: 24px;
-  --sombra: 0 12px 32px rgba(44, 44, 44, 0.12);
-  --sombra-glow: 0 8px 20px rgba(236, 128, 43, 0.35);
+  --sombra: 0 14px 34px rgba(44, 44, 44, 0.08);
+  --sombra-glow: 0 8px 20px rgba(102, 188, 180, 0.28);
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
-  /* Fondo base cálido con degradado suave */
-  background: linear-gradient(135deg, #E8CCAD 0%, #f4dec7 100%);
+  /* Fondo animado suave tipo luz ambiental / ondas cálidas */
+  background:
+    radial-gradient(circle at 15% 20%, rgba(102, 188, 180, 0.24) 0%, transparent 45%),
+    radial-gradient(circle at 85% 25%, rgba(255, 249, 241, 0.85) 0%, transparent 50%),
+    radial-gradient(circle at 50% 85%, rgba(102, 188, 180, 0.18) 0%, transparent 55%),
+    linear-gradient(125deg, #E8CCAD 0%, #f3dcc4 50%, #e5c3a0 100%);
+  background-size: 160% 160%;
+  animation: ambientFlow 14s ease-in-out infinite alternate;
   color: var(--texto);
   font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
   line-height: 1.5;
@@ -30,209 +38,285 @@ body {
   overflow-x: hidden;
 }
 
-/* ---------- Fondo Animado de Ondas y Señales de Radio (Canvas) ---------- */
-#matrixCanvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 0; /* Se queda siempre detrás de todo */
-  pointer-events: none;
-  display: block;
+/* Ocultar burbujas por si siguen en el HTML */
+.background-bubbles,
+.bubble {
+  display: none !important;
+}
+
+@keyframes ambientFlow {
+  0% {
+    background-position: 0% 20%;
+  }
+  50% {
+    background-position: 100% 60%;
+  }
+  100% {
+    background-position: 30% 100%;
+  }
 }
 
 /* ---------- Estructura Principal ---------- */
-.layout { 
-  max-width: 980px; 
-  margin: 0 auto; 
-  padding: 32px 20px 60px; 
+.layout {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
   position: relative;
   z-index: 1;
 }
 
 /* ---------- Cabecera ---------- */
-header { 
-  display: flex; 
-  flex-wrap: wrap; 
-  justify-content: space-between; 
-  align-items: center; 
-  gap: 16px; 
-  margin-bottom: 28px; 
+header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+  background: var(--tarjeta);
+  padding: 18px 24px;
+  border-radius: 20px;
+  box-shadow: var(--sombra);
+  border: 1px solid rgba(44, 44, 44, 0.06);
 }
 
-h1 { 
-  margin: 0; 
-  font-size: 3rem; 
-  font-weight: 700; 
-  font-family: 'Fredoka', cursive, sans-serif;
-  color: var(--primario);
-  letter-spacing: 0.5px;
-  text-shadow: 2px 2px 0px rgba(237, 197, 91, 0.4);
-}
-
-/* Indicador EN VIVO Animado */
-.live-badge {
-  display: inline-flex; 
-  align-items: center; 
-  gap: 10px; 
+header h1,
+h1 {
   margin: 0;
-  padding: 10px 20px; 
-  border-radius: 999px; 
+  font-size: 2.5rem;
+  font-weight: 700;
+  font-family: 'Fredoka', cursive, sans-serif;
+  color: var(--texto);
+  letter-spacing: 0.4px;
+  text-shadow: none;
+}
+
+/* Indicador EN VIVO / SIN SEÑAL */
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 10px 20px;
+  border-radius: 999px;
   font-weight: 800;
   font-size: 0.9rem;
-  background: var(--tarjeta); 
-  box-shadow: var(--sombra);
-  border: 2px solid rgba(237, 197, 91, 0.4);
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(44, 44, 44, 0.06);
+  border: 1px solid rgba(44, 44, 44, 0.08);
 }
 
-.dot { 
-  width: 12px; 
-  height: 12px; 
-  border-radius: 50%; 
-  background: #B0B0B0; 
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #B0B0B0;
   transition: all 0.3s ease;
 }
 
-.live-badge[data-live="true"] .dot { 
-  background: var(--acento); 
-  animation: pulsoGlow 1.4s infinite alternate; 
+.live-badge[data-live="true"] .dot {
+  background: var(--acento);
+  animation: pulsoGlow 1.4s infinite alternate;
 }
 
-.count { 
-  font-weight: 700; 
-  padding-left: 10px; 
-  border-left: 2px solid var(--secundario); 
+.count {
+  font-weight: 700;
+  padding-left: 10px;
+  border-left: 2px solid rgba(44, 44, 44, 0.14);
   color: var(--texto);
 }
 
-@keyframes pulsoGlow { 
-  0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(102, 188, 180, 0.7); }
-  100% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(102, 188, 180, 0); }
+@keyframes pulsoGlow {
+  0% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(102, 188, 180, 0.7);
+  }
+  100% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 10px rgba(102, 188, 180, 0);
+  }
 }
 
 /* ---------- Tarjetas ---------- */
-.card { 
-  background: var(--tarjeta); 
-  border-radius: var(--radio); 
-  padding: 28px; 
+.card {
+  background: var(--tarjeta);
+  border-radius: var(--radio);
+  padding: 28px;
   box-shadow: var(--sombra);
+  border: 1px solid rgba(44, 44, 44, 0.06);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   backdrop-filter: blur(10px);
 }
 
 .card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 16px 40px rgba(44, 44, 44, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 38px rgba(44, 44, 44, 0.11);
 }
 
-.player { 
+.player {
   position: relative;
-  border-top: 8px solid var(--secundario); 
-  margin-bottom: 24px; 
+  border-top: 5px solid var(--acento);
+  margin-bottom: 24px;
   overflow: hidden;
 }
 
-.label { 
-  margin: 0; 
-  font-weight: 800; 
-  color: var(--acento); 
+/* Ecualizador musical sutil integrado en la tarjeta del reproductor */
+.equalizer {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 22px;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+.equalizer span {
+  display: block;
+  width: 4px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--acento);
+  opacity: 0.45;
+  transition: height 0.2s ease, opacity 0.2s ease;
+}
+
+.player.is-playing .equalizer span,
+.live-badge[data-live="true"] ~ .layout .equalizer span,
+body.playing .equalizer span {
+  opacity: 1;
+  animation: eqBounce 0.85s ease-in-out infinite alternate;
+}
+
+.equalizer span:nth-child(1) { animation-delay: 0s; }
+.equalizer span:nth-child(2) { animation-delay: 0.18s; }
+.equalizer span:nth-child(3) { animation-delay: 0.34s; }
+.equalizer span:nth-child(4) { animation-delay: 0.12s; }
+.equalizer span:nth-child(5) { animation-delay: 0.28s; }
+
+@keyframes eqBounce {
+  0% {
+    height: 6px;
+  }
+  50% {
+    height: 21px;
+  }
+  100% {
+    height: 11px;
+  }
+}
+
+.label {
+  margin: 0;
+  font-weight: 800;
+  color: var(--acento);
   text-transform: uppercase;
   letter-spacing: 1px;
   font-size: 0.85rem;
 }
 
-.player h2 { 
-  margin: 6px 0 2px; 
-  font-size: 2rem; 
+.player h2 {
+  margin: 6px 0 2px;
+  font-size: 2rem;
   font-weight: 800;
   color: var(--texto);
 }
 
-.artist { 
-  margin: 0 0 20px; 
-  opacity: 0.75; 
+.artist {
+  margin: 0 0 20px;
+  opacity: 0.75;
   font-weight: 600;
 }
 
-audio { 
-  width: 100%; 
+audio {
+  width: 100%;
   border-radius: 12px;
   outline: none;
 }
 
-.columns { 
-  display: grid; 
-  grid-template-columns: 1fr 1fr; 
-  gap: 24px; 
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
 }
 
-h3 { 
-  margin: 0 0 16px; 
-  font-size: 1.3rem;
+h3 {
+  margin: 0 0 16px;
+  font-size: 1.25rem;
   font-weight: 800;
-  color: var(--primario);
+  color: var(--texto);
 }
 
 /* ---------- Listas ---------- */
-.list { 
-  list-style: none; 
-  margin: 0; 
-  padding: 0; 
-  display: grid; 
-  gap: 12px; 
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
 }
 
-ol.list { counter-reset: turno; }
+ol.list {
+  counter-reset: turno;
+}
 
 .list li {
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center; 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   gap: 12px;
-  padding: 12px 16px; 
-  border-radius: 16px; 
-  background: rgba(255, 255, 255, 0.9);
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(44, 44, 44, 0.05);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
   transition: all 0.25s ease;
 }
 
 .list li:hover {
   transform: translateX(4px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.07);
 }
 
-ol.list li { 
-  counter-increment: turno; 
-  border-left: 6px solid var(--acento); 
+ol.list li {
+  counter-increment: turno;
+  border-left: 5px solid var(--acento);
 }
 
-ol.list li::before { 
-  content: counter(turno); 
-  font-weight: 800; 
-  font-size: 1.1rem;
-  color: var(--primario); 
-  margin-right: 8px; 
+ol.list li::before {
+  content: counter(turno);
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--acento);
+  margin-right: 8px;
 }
 
-ol.list li span.t { flex: 1; font-weight: 700; }
-.song small { display: block; opacity: 0.65; font-weight: 600; margin-top: 2px; }
+ol.list li span.t {
+  flex: 1;
+  font-weight: 700;
+}
+
+.song small {
+  display: block;
+  opacity: 0.65;
+  font-weight: 600;
+  margin-top: 2px;
+}
 
 /* ---------- Botones ---------- */
 button {
   position: relative;
-  background: linear-gradient(135deg, var(--primario) 0%, #e06d18 100%);
-  color: #ffffff; 
-  border: 0; 
+  background: var(--texto);
+  color: var(--tarjeta);
+  border: 1px solid rgba(44, 44, 44, 0.12);
   border-radius: 999px;
-  padding: 10px 20px; 
-  font-weight: 800; 
+  padding: 10px 20px;
+  font-weight: 700;
   font-size: 0.9rem;
-  cursor: pointer; 
+  cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
-  box-shadow: var(--sombra-glow);
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 6px 16px rgba(44, 44, 44, 0.12);
+  transition: all 0.25s ease;
 }
 
 button::after {
@@ -242,42 +326,65 @@ button::after {
   left: -60%;
   width: 40%;
   height: 200%;
-  background: linear-gradient(60deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  background: linear-gradient(60deg, transparent, rgba(255, 255, 255, 0.25), transparent);
   transform: rotate(25deg);
   transition: all 0.6s ease;
 }
 
-button:hover { 
-  transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 10px 24px rgba(236, 128, 43, 0.45);
+button:hover {
+  background: var(--acento);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-glow);
 }
 
-button:hover::after { left: 130%; }
-button:active { transform: translateY(1px) scale(0.97); }
+button:hover::after {
+  left: 130%;
+}
 
-.empty { margin: 12px 0 0; opacity: 0.7; font-weight: 600; }
-.empty[hidden] { display: none; }
+button:active {
+  transform: translateY(0);
+}
+
+.empty {
+  margin: 12px 0 0;
+  opacity: 0.7;
+  font-weight: 600;
+}
+
+.empty[hidden] {
+  display: none;
+}
 
 /* ---------- Toast ---------- */
 .toast {
-  position: fixed; 
-  left: 50%; 
-  bottom: 30px; 
+  position: fixed;
+  left: 50%;
+  bottom: 30px;
   transform: translate(-50%, 140px);
-  background: #2C2C2C; 
-  color: #ffffff; 
-  padding: 14px 28px; 
+  background: #2C2C2C;
+  color: #ffffff;
+  padding: 14px 28px;
   border-radius: 999px;
   font-weight: 700;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   border: 2px solid var(--acento);
   transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   z-index: 1000;
 }
 
-.toast.show { transform: translate(-50%, 0); }
+.toast.show {
+  transform: translate(-50%, 0);
+}
 
-@media (max-width: 720px) { 
-  .columns { grid-template-columns: 1fr; } 
-  h1 { font-size: 2.2rem; }
+/* ---------- Responsivo ---------- */
+@media (max-width: 720px) {
+  .columns {
+    grid-template-columns: 1fr;
+  }
+
+  h1,
+  header h1 {
+    font-size: 2.1rem;
+  }
 }
