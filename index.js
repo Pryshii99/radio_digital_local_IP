@@ -1,5 +1,5 @@
 // ============================================================
-// Radio Digital Local - Backend (Express + Socket.io + SQLite)
+// Radio Digital Local - Backend 
 // ============================================================
 const express = require('express');
 const http = require('http');
@@ -92,8 +92,6 @@ async function pollIcecast() {
 }
 
 // ---------- 5. API para el reproductor (Liquidsoap / ices / script) ----------
-// El reproductor de audio llama a este endpoint al terminar cada canción.
-// Devuelve la ruta del archivo: primero la cola de peticiones, si no hay, una al azar.
 app.get('/api/next', async (req, res) => {
   try {
     const [req1] = await all(`
